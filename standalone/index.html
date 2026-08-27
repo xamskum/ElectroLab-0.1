@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ElectroLab — Level 1</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; overflow: hidden; background: #0a0e17; font-family: 'Segoe UI', system-ui, sans-serif; }
+    canvas { display: block; width: 100%; height: 100%; }
+    #ui { position: absolute; inset: 0; pointer-events: none; z-index: 10; }
+    #ui > * { pointer-events: auto; }
+    .hud {
+      position: absolute; top: 16px; left: 16px;
+      background: rgba(10,20,40,0.88); border: 1px solid #00d4ff44;
+      border-radius: 8px; padding: 12px 16px; color: #e0f7ff; max-width: 340px;
+    }
+    .hud h2 { font-size: 13px; color: #00d4ff; margin-bottom: 6px; letter-spacing: 1px; }
+    .hud p { font-size: 13px; line-height: 1.4; opacity: 0.92; }
+    .btns { position: absolute; top: 16px; right: 16px; display: flex; gap: 8px; }
+    .btns button {
+      background: rgba(10,20,40,0.88); border: 1px solid #00d4ff44; color: #e0f7ff;
+      padding: 8px 14px; border-radius: 6px; cursor: pointer; font-size: 13px;
+    }
+    .btns button:hover { border-color: #00d4ff; }
+    .crosshair {
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+      width: 8px; height: 8px; border: 2px solid #00d4ffaa; border-radius: 50%;
+      pointer-events: none;
+    }
+    #prompt {
+      position: absolute; bottom: 70px; left: 50%; transform: translateX(-50%);
+      background: rgba(0,0,0,0.75); color: #fff; padding: 8px 16px;
+      border-radius: 6px; font-size: 14px; display: none; border: 1px solid #00d4ff66;
+    }
+    #loading {
+      position: absolute; inset: 0; background: #0a0e17; display: flex;
+      align-items: center; justify-content: center; flex-direction: column;
+      color: #00d4ff; z-index: 100; text-align: center; padding: 24px;
+    }
+    #loading h1 { font-size: 28px; letter-spacing: 4px; margin-bottom: 12px; }
+    #loading p { opacity: 0.7; max-width: 420px; line-height: 1.5; }
+    #loading .err { color: #ff6688; margin-top: 16px; font-size: 13px; opacity: 1; }
+  </style>
+</head>
+<body>
+  <div id="loading">
+    <h1>ELECTROLAB</h1>
+    <p id="load-msg">Загрузка лаборатории...</p>
+  </div>
+  <div id="ui" style="display:none">
+    <div class="hud">
+      <h2>ЗАДАЧА</h2>
+      <p id="task">Найди способ открыть дверь</p>
+    </div>
+    <div class="btns">
+      <button id="btn-hint">Подсказка</button>
+      <button id="btn-know">Знания</button>
+      <button id="btn-sound">🔊</button>
+      <button id="btn-map">Карта</button>
+    </div>
+    <div id="meter" style="position:absolute;bottom:16px;right:16px;background:rgba(10,20,40,0.88);border:1px solid #00d4ff44;border-radius:8px;padding:8px 12px;color:#a8d4e8;font-size:12px;font-family:ui-monospace,monospace;min-width:140px;display:none;">
+      <div>I = <span id="m-i">—</span> A</div>
+      <div>R = <span id="m-r">—</span> Ω</div>
+      <div>P = <span id="m-p">—</span> W</div>
+    </div>
+    <div id="level-badge" style="position:absolute;bottom:16px;left:16px;background:rgba(10,20,40,0.88);border:1px solid #00d4ff44;border-radius:8px;padding:8px 12px;color:#00d4ff;font-size:12px;letter-spacing:1px;">LEVEL 1</div>
+    <div class="crosshair"></div>
+    <div id="prompt">E — взаимодействовать</div>
+  </div>
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.169.0/build/three.module.js",
+      "three/addons/": "https://unpkg.com/three@0.169.0/examples/jsm/"
+    }
+  }
+  </script>
+  <script type="module">
+    const loadMsg = document.getElementById('load-msg');
+    const loading = document.getElementById('loading');
+    window.addEventListener('error', (e) => {
+      loadMsg.innerHTML = 'Ошибка загрузки.<br><span class="err">' + (e.message || e) + '</span><br><br>Нужен интернет (Three.js с CDN) и локальный сервер (не file://).';
+    });
+    window.addEventListener('unhandledrejection', (e) => {
+      loadMsg.innerHTML = 'Ошибка модуля.<br><span class="err">' + (e.reason && e.reason.message ? e.reason.message : e.reason) + '</span>';
+    });
+  </script>
+  <script type="module" src="./game.js"></script>
+</body>
+</html>
